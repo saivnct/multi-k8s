@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+before_install:
+  # init travis decrypted file (GC SDK json file that encrypted before)
+  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in multi-k8s-256608-2c3a5b84f906.json.enc -out multi-k8s-256608-2c3a5b84f906.json -d
+  #Install GoogleCloud SDK
+  # download GoogleCloud SDK and install it locally on our litte instance of travis ci
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  # look at the default install directory of GC SDK, and source path.bash.inc
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  # install and update kubectl inside of our Travis environment
+  - gcloud components update kubectl
+  # do authentication to login and get access to GC account
+  - gcloud auth activate-service-account --key-file service-account.json  
