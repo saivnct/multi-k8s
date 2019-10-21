@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: worker
+  template:
+    metadata:
+      labels:
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: saivnct/multi-worker
+          # Setup environment variables
+          env:            
+            - name: REDIS_HOST
+              #name of redis cluster ip service
+              value:  redis-cluster-ip-service
+            - name: REDIS_PORT
+              # environment variable must be in string
+              value: '6379'
