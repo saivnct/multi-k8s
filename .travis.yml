@@ -12,4 +12,10 @@ before_install:
   # install and update kubectl inside of our Travis environment
   - gcloud components update kubectl
   # do authentication to login and get access to GC account
-  - gcloud auth activate-service-account --key-file service-account.json  
+  - gcloud auth activate-service-account --key-file multi-k8s-256608-2c3a5b84f906.json  
+  # select project to work (NOTE:project id)
+  - gcloud config set project multi-k8s-256608
+  # declare compute zone that  we're working with
+  - gcloud config set compute/zone asia-southeast1-a  
+  # declare what cluster we're working with
+  - gcloud container clusters get-credentials giangbb-multi-cluster
