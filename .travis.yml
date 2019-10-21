@@ -1,6 +1,12 @@
 sudo: required
 services:
   - docker
+env:
+  global:
+    # get current commit SHA
+    - GIT_SHA=$(git rev-parse HEAD)
+    # disable prompt when running gcloud sdk
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
   # init travis decrypted file (GC SDK json file that encrypted before)
   - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in multi-k8s-256608-2c3a5b84f906.json.enc -out multi-k8s-256608-2c3a5b84f906.json -d
@@ -19,3 +25,17 @@ before_install:
   - gcloud config set compute/zone asia-southeast1-a  
   # declare what cluster we're working with
   - gcloud container clusters get-credentials giangbb-multi-cluster
+  # login into docker cli
+  - echo  "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # build the test version of multi-client
+  - docker build -t saivnct/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  # run test
+  - docker run -e CI=true saivnct/react-test npm run test
+
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
