@@ -10,7 +10,6 @@ docker push saivnct/multi-client:$GIT_SHA
 docker push saivnct/multi-server:$GIT_SHA
 docker push saivnct/multi-worker:$GIT_SHA
 
-
 kubectl apply -f k8s
 kubectl set image deployments/client-deployment client=saivnct/multi-client:$GIT_SHA
 kubectl set image deployments/server-deployment server=saivnct/multi-server:$GIT_SHA
